@@ -56,6 +56,7 @@ Total: 54 passos em 20 minutos. O mirante tem quatro seções: a base no auge (1
 
 - **Números no auge:** contagem do dashboard de 2025-08-21: **196.314** espécies (nomes aceitos) e **8.984.456** registros de ocorrência. O README v5.0 declara "cerca de 12 milhões"; o repositório não explica a diferença. Se houver contagem melhor, trocar `auge` em `dados.js`.
 - **Respostas do ChatBB:** a tela mostra só as 14 perguntas e as coleções que cada uma cruza, com o rótulo "Caminho previsto pelas regras do prompt".
+- **Faixa de selos (rodapé):** mostra quais das 5 fontes a base integrava na época da tela. No hub de abertura, todos ficam apagados (decisão do roteiro, seção 4); o autor viu e aprovou em 2026-11-14.
 - **Cloudflare Web Analytics:** o Cloudflare injeta `static.cloudflareinsights.com/beacon.min.js` no HTML. Na verificação, a requisição desse script falhou; causa provável: a CSP da página (`script-src 'self'`). É a única requisição externa, e ela não carrega. Para eliminar a tentativa, desligar o Web Analytics do domínio no painel do Cloudflare.
 - **Service worker:** a página (HTML) vai à rede primeiro e usa o cache só sem rede. O plano pedia cache-first para tudo; com cache-first no HTML, uma publicação nova ficava presa atrás do `index.html` antigo.
 - **Sem rede na reunião:** abrir a URL uma vez com rede, antes. Depois a página abre do cache.
