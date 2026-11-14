@@ -13,48 +13,59 @@ Atualizado em 2026-11-14.
 
 ## Frente ativa: apresentação para o GT Repositórios (2026-11-26)
 
-Roteiro e plano estão prontos em [`docs/divulgacao/202622gtRepositorios/`](./divulgacao/202622gtRepositorios/index.md), com commit `42f4cc6` no `main` (sem push). Não há mapa wayfinder no GitHub: o autor confirmou que não restava névoa.
+A apresentação está implementada e publicada em <https://web.dalc.in/202622gtRepositorios/> (`VERSAO` `2026-11-14a`). Documentos e código em [`docs/divulgacao/202622gtRepositorios/`](./divulgacao/202622gtRepositorios/index.md).
 
-**Falta:** implementar e publicar a apresentação. É trabalho de uma nova sessão (Opus 5.5).
+**Falta:** revisão do autor (falas, frase final, números do auge) e ensaio com cronômetro.
 
-### O que a sessão de implementação deve abrir
+### Como conduzir
 
-- [`plano-implementacao.md`](./divulgacao/202622gtRepositorios/plano-implementacao.md) — ponto de entrada. Traz arquitetura, arquivos, especificação de cada tela, fases com aceite, verificação e publicação. A seção 13 tem o prompt inicial para colar na nova sessão.
-- [`roteiro.md`](./divulgacao/202622gtRepositorios/roteiro.md) — conteúdo: tese, decisões do autor, a trilha, 6 paradas, fecho, falas e evidências.
-- [`pesquisa/`](./divulgacao/202622gtRepositorios/pesquisa/index.md) — 6 arquivos de fatos (histórico, ingestão, prompt final literal, 14 perguntas, números no auge, plataforma).
+| Tecla | Ação |
+|---|---|
+| `→`, `Espaço`, `PageDown`, `Enter` | Próximo passo |
+| `←`, `PageUp` | Passo anterior |
+| `H`, `Esc` | Abre e fecha a trilha, com o caminhante na parada atual |
+| `1` a `6` | Vai para a parada |
+| `T` | Tema claro ou escuro |
+| `F` | Tela cheia |
 
-### Como ficou a apresentação
+A URL guarda o ponto da apresentação (`#/4/7` = parada 4, passo 8). Recarregar a página volta ao mesmo ponto. Um clique em uma placa, cartão, bloco ou pergunta abre esse item.
 
-Remoto, Google Meet, 20 minutos. Tela-hub: trilha na floresta em perfil de elevação.
+### Passos por tela
 
-| Tela | Título | Tempo |
-|---|---|---|
-| Hub | A trilha (abertura) | 1:00 |
-| 1 | A semente: DWC2JSON | 2:30 |
-| 2 | Base de Dados Integrada + interface de acesso | 2:30 |
-| 3 | Fontes temáticas | 2:00 |
-| 4 | O mirante: ChatBB (auge da fase 1) | 5:00 |
-| 5 | A virada: simplicidade e dados locais | 2:30 |
-| 6 | A clareira: ingestão hoje | 3:00 |
-| Fecho | Próximas estações (volta ao hub) | 1:30 |
+| Tela | Título | Tempo | Passos | Segundos por passo |
+|---|---|---|---|---|
+| Hub | A trilha (abertura) | 1:00 | 1 | 60 |
+| 1 | A semente: DWC2JSON | 2:30 | 4 | 37 |
+| 2 | Base de Dados Integrada + interface de acesso | 2:30 | 7 | 21 |
+| 3 | Fontes temáticas | 2:00 | 6 | 20 |
+| 4 | O mirante: ChatBB (auge da fase 1) | 5:00 | 19 | 16 |
+| 5 | A virada: simplicidade e dados locais | 2:30 | 3 | 50 |
+| 6 | A clareira: ingestão hoje | 3:00 | 10 | 18 |
+| Fecho | Próximas estações (volta ao hub) | 1:30 | 4 | 22 |
 
-O mirante tem quatro passos: números da base, como o chat funcionava, o prompt final em 7 blocos didáticos e as perguntas reais.
+Total: 54 passos em 20 minutos. O mirante tem quatro seções: a base no auge (1 passo), como funcionava (4), o prompt (9: 7 blocos, o grafo do bloco 6 e as 3 lições) e as perguntas (5: a lista e os 4 destaques). As seções "como funcionava" (11 s por passo) e "o prompt" (13 s por passo) são as mais densas: ensaiar primeiro.
+
+### Como publicar uma mudança
+
+1. Editar em `docs/divulgacao/202622gtRepositorios/site/`. O conteúdo de tela está todo em `dados.js`. Nunca editar no web root.
+2. Trocar `VERSAO` (`2026-11-14a`) em `sw.js`, `index.html`, `app.js`, `trilha.js` e `paradas.js`.
+3. Rodar `node docs/divulgacao/202622gtRepositorios/verificar-dados.js`.
+4. Copiar o conteúdo de `site/` para `S:/appsdata/web.dalc.in/202622gtRepositorios/`.
 
 ### Pontos que o autor deve conhecer
 
-- **Números no auge:** contagem do dashboard de 2025-08-21: **196.314** espécies (nomes aceitos) e **8.984.456** registros de ocorrência. O README v5.0 declara "cerca de 12 milhões"; o repositório não explica a diferença. Se houver contagem melhor, trocar no passo 4.0 do roteiro.
-- **Respostas do ChatBB:** não existem mais em lugar acessível (`trilium.dalc.in` não resolve). A tela mostra só as 14 perguntas e as coleções que cada uma cruza, com o rótulo "caminho previsto pelas regras do prompt".
-- **Fontes temáticas:** a parada 5 diz em linha fixa que ainda não foram migradas para o DuckDB, com a declaração do autor sobre a virada.
-- **Código da apresentação:** desenvolver em `docs/divulgacao/202622gtRepositorios/site/` e copiar para `S:/appsdata/web.dalc.in/202622gtRepositorios/` só depois da verificação. A pasta do web root é o site ao vivo.
+- **Números no auge:** contagem do dashboard de 2025-08-21: **196.314** espécies (nomes aceitos) e **8.984.456** registros de ocorrência. O README v5.0 declara "cerca de 12 milhões"; o repositório não explica a diferença. Se houver contagem melhor, trocar `auge` em `dados.js`.
+- **Respostas do ChatBB:** a tela mostra só as 14 perguntas e as coleções que cada uma cruza, com o rótulo "Caminho previsto pelas regras do prompt".
+- **Cloudflare Web Analytics:** o Cloudflare injeta `static.cloudflareinsights.com/beacon.min.js` no HTML. Na verificação, a requisição desse script falhou; causa provável: a CSP da página (`script-src 'self'`). É a única requisição externa, e ela não carrega. Para eliminar a tentativa, desligar o Web Analytics do domínio no painel do Cloudflare.
+- **Service worker:** a página (HTML) vai à rede primeiro e usa o cache só sem rede. O plano pedia cache-first para tudo; com cache-first no HTML, uma publicação nova ficava presa atrás do `index.html` antigo.
+- **Sem rede na reunião:** abrir a URL uma vez com rede, antes. Depois a página abre do cache.
 
 ### Pendências do autor (nenhuma bloqueia)
 
 1. URL do repositório no fecho: está `github.com/edalcin/BiodiversidadeDB`; o README manda clonar `biopinda/Biodiversidade-Online`.
-2. Rever as falas e a frase final ("Integrar é o que gera informação. Hospedar não é."). São proposta do roteiro.
+2. Rever as falas (ficam no roteiro, fora da página) e a frase final ("Integrar é o que gera informação. Hospedar não é.").
 3. Ensaio com cronômetro.
-4. `git push` do commit `42f4cc6`.
-
-Alternativa mais simples, se o prazo apertar: reveal.js vendorizado dá o mesmo conteúdo com menos código, mas perde a trilha como tela-hub.
+4. `git push` dos commits locais. O link do `<noscript>` para o roteiro no GitHub só funciona depois do push.
 
 ## Pendências do projeto (fora da apresentação)
 

@@ -1,0 +1,1331 @@
+/* A trilha da base integrada.
+   O palco é uma caixa 16:9 e 1rem = 2,2 % da altura dela. Tudo é medido em rem, então a tela
+   é a mesma em 1280×720 e em 1920×1080 (plano, seção 6.5: corpo ≥ 2,2 %, rótulos ≥ 1,6 % = .73rem).
+   Nos SVG das paradas, 20 unidades ≈ 1rem. Sem estilo inline: a CSP só aceita esta folha. */
+
+:root {
+  --serif: "Palatino Linotype", Palatino, "Book Antiqua", "Iowan Old Style", Georgia, serif;
+  --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+  /* "aceso": a marcação de trilha, amarelo sobre tinta escura. Igual nas 8 telas e nos 2 temas. */
+  --aceso: #f5b800;
+  --aceso-tinta: #1b2a22;
+}
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --fora: #dfe3d3;
+  --papel: #eef0e4;
+  --painel: #f8f9f1;
+  --tinta: #1b2a22;
+  --apagado: #55655a;
+  --linha: #c3cbb5;
+  --aceso-linha: #8f5400;
+  --agua: #2b7a9e;
+  --ceu-a: #cfe0e2;
+  --ceu-b: #eef0e4;
+  --serra: #c4d2c0;
+  --mata-meio: #8fae92;
+  --encosta: #557f63;
+  --copa: #3f6b50;
+  --mata-perto: #27493a;
+  --clareira: #b9cf9a;
+  --trilha: #fbf3d6;
+  --trilha-borda: #1b2a22;
+  --halo: 0.4;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --fora: #070b09;
+  --papel: #0e1613;
+  --painel: #15201c;
+  --tinta: #e6ebe0;
+  --apagado: #9fb1a4;
+  --linha: #2e3e36;
+  --aceso-linha: #f5b800;
+  --agua: #6fb8d8;
+  --ceu-a: #0a1220;
+  --ceu-b: #16262b;
+  --serra: #18282b;
+  --mata-meio: #1b3a30;
+  --encosta: #12261d;
+  --copa: #0b1a14;
+  --mata-perto: #060d0a;
+  --clareira: #2b4a34;
+  --trilha: #f0e2b0;
+  --trilha-borda: #050a08;
+  --halo: 0.75;
+}
+/* Parada 4, o mirante: céu aberto. */
+:root[data-theme="light"] [data-paleta="ceu"] {
+  --papel: #e2eef4;
+  --painel: #f3f9fc;
+  --tinta: #13242e;
+  --apagado: #48606d;
+  --linha: #b3c9d6;
+}
+:root[data-theme="dark"] [data-paleta="ceu"] {
+  --papel: #0c1626;
+  --painel: #132035;
+  --apagado: #a2b5c9;
+  --linha: #2a3d57;
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  font-size: clamp(8px, min(2.2vh, 1.2375vw), 48px);
+  background: var(--fora);
+}
+body {
+  margin: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.palco {
+  position: relative;
+  width: min(100vw, 177.778vh);
+  height: min(100vh, 56.25vw);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) max(4rem, 50px);
+  overflow: hidden;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 1rem/1.4 var(--sans);
+}
+#tela {
+  min-height: 0;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+:focus-visible {
+  outline: 0.2rem solid var(--aceso-linha);
+  outline-offset: 0.15rem;
+}
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  padding: 0.05em 0.3em;
+  border-radius: 0.2em;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  overflow-wrap: anywhere;
+}
+q {
+  quotes: "“" "”" "‘" "’";
+}
+svg text {
+  font-family: var(--sans);
+}
+.sem-js {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  padding: 3rem;
+  background: var(--papel);
+  color: var(--tinta);
+  font: 18px/1.5 var(--serif);
+}
+.sem-js > * {
+  max-width: 40rem;
+}
+
+/* ---------- Base: selos e controles, iguais nas 8 telas ---------- */
+.base {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1.6rem;
+  background: var(--papel);
+  border-top: 1px solid var(--linha);
+}
+.selos {
+  display: flex;
+  gap: 0.5rem;
+}
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.8rem 0.3rem 0.6rem;
+  border: 0.1rem solid var(--linha);
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  color: var(--apagado);
+}
+.selo .bx {
+  font-size: 1.15rem;
+}
+.selo small {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+.selo[data-estado="aceso"] {
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  border: 0.16rem solid var(--tinta);
+  font-weight: 700;
+}
+.selo[data-estado="contorno"] {
+  border: 0.13rem dashed var(--aceso-linha);
+  color: var(--tinta);
+}
+.controles {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.conta {
+  margin-right: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--apagado);
+  font-variant-numeric: tabular-nums;
+}
+.ctl {
+  display: inline-grid;
+  place-items: center;
+  width: max(44px, 2.8rem);
+  height: max(44px, 2.8rem);
+  padding: 0;
+  border: 1px solid var(--linha);
+  border-radius: 50%;
+  background: none;
+  color: var(--tinta);
+  font-size: 1.5rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ctl:hover {
+  border-color: var(--tinta);
+}
+.ctl[aria-disabled="true"] {
+  opacity: 0.35;
+  border-color: var(--linha);
+  cursor: default;
+}
+:root[data-theme="dark"] .bx-moon,
+:root:not([data-theme="dark"]) .bx-sun {
+  display: none;
+}
+
+/* ---------- Hub: a trilha ---------- */
+.hub {
+  position: absolute;
+  inset: 0;
+}
+.hub > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ceu-a {
+  stop-color: var(--ceu-a);
+}
+.ceu-b {
+  stop-color: var(--ceu-b);
+}
+.nevoa-a {
+  stop-color: var(--papel);
+  stop-opacity: 0;
+}
+.nevoa-b {
+  stop-color: var(--papel);
+  stop-opacity: 0.88;
+}
+.halo-a {
+  stop-color: var(--aceso);
+  stop-opacity: var(--halo);
+}
+.halo-b {
+  stop-color: var(--aceso);
+  stop-opacity: 0;
+}
+.serra {
+  fill: var(--serra);
+}
+.mata-meio {
+  fill: var(--mata-meio);
+}
+.encosta {
+  fill: var(--encosta);
+}
+.copa {
+  fill: var(--copa);
+  opacity: 0.4;
+}
+.mata-perto {
+  fill: var(--mata-perto);
+}
+.clareira {
+  fill: var(--clareira);
+}
+.agua {
+  fill: none;
+  stroke: var(--agua);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.agua.fina {
+  stroke-width: 2;
+}
+.nascente {
+  fill: var(--agua);
+}
+/* A trilha tem o maior contraste da tela: chão claro com borda escura. */
+.trilha-borda {
+  fill: none;
+  stroke: var(--trilha-borda);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.trilha-chao {
+  fill: none;
+  stroke: var(--trilha);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.trilha-online,
+.trilha-nevoa {
+  fill: none;
+  stroke: var(--trilha);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 3 10;
+  opacity: 0.75;
+}
+.trilha-nevoa {
+  stroke: var(--tinta);
+  stroke-dasharray: 10 9;
+}
+.trilha-fim {
+  stroke: var(--trilha);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.mirante {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+.guia {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+.fase {
+  font: italic 23px var(--serif);
+  fill: var(--tinta);
+}
+.encerrado {
+  font-size: 16px;
+  fill: var(--tinta);
+}
+.placa-rect {
+  fill: var(--painel);
+  stroke: var(--tinta);
+  stroke-width: 1.5;
+}
+.placa-t {
+  font-size: 19px;
+  font-weight: 600;
+  fill: var(--tinta);
+}
+.placa-t.fraco {
+  font-weight: 400;
+  fill: var(--apagado);
+}
+.placa-d {
+  font-size: 15.5px;
+  fill: var(--apagado);
+}
+.italico {
+  font-style: italic;
+}
+.marca {
+  fill: var(--painel);
+  stroke: var(--tinta);
+  stroke-width: 3;
+}
+.marca.inicio {
+  fill: var(--trilha);
+  stroke: var(--trilha-borda);
+}
+.ponto-num {
+  font-size: 21px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--tinta);
+}
+.ponto.atual .marca {
+  fill: var(--aceso);
+  stroke-width: 5;
+}
+.ponto.atual .ponto-num {
+  fill: var(--aceso-tinta);
+}
+a.ponto:hover .placa-rect,
+a.ponto:focus-visible .placa-rect {
+  stroke-width: 4;
+}
+.marco-nevoa {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+.marco-nevoa.aceso {
+  fill: var(--aceso);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+.caminhante .halo-traco {
+  fill: none;
+  stroke: var(--papel);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.caminhante circle.halo-traco {
+  fill: var(--papel);
+}
+.caminhante .traco {
+  fill: none;
+  stroke: var(--tinta);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.caminhante .cabeca {
+  fill: var(--tinta);
+}
+.mochila {
+  fill: var(--aceso);
+  stroke: var(--tinta);
+  stroke-width: 1.5;
+}
+.hub-texto {
+  position: absolute;
+  left: 3.2rem;
+  top: 2.4rem;
+  width: 31rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.hub-texto h1 {
+  margin: 0;
+  font: 600 3.9rem/1.02 var(--serif);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.hub-sub,
+.hub-mensagem {
+  margin: 0;
+  font: 1.35rem/1.3 var(--serif);
+}
+.hub-assina {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--apagado);
+}
+.hub-sub + .hub-assina {
+  margin-top: 0.6rem;
+}
+.hub-frase {
+  margin: 0.8rem 0 0.4rem;
+  font: 600 2.7rem/1.1 var(--serif);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.hub-rodape {
+  position: absolute;
+  left: 15rem;
+  bottom: calc(max(4rem, 50px) + 0.8rem);
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--tinta);
+  background: var(--painel);
+  font-size: 0.8rem;
+}
+.hub-rodape p {
+  margin: 0;
+}
+
+/* ---------- Paradas: estrutura comum ---------- */
+.parada {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding: 1.3rem 2rem 0.7rem;
+}
+.cab {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+}
+.blaze {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border: 0.16rem solid var(--tinta);
+  border-radius: 50%;
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  font: 700 1.5rem/1 var(--sans);
+}
+.blaze.mini {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-width: 0.1rem;
+  font-size: 0.8rem;
+}
+.cab h1 {
+  margin: 0;
+  font: 600 2.1rem/1.1 var(--serif);
+  letter-spacing: -0.01em;
+}
+.marco {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  color: var(--apagado);
+}
+.mini {
+  width: 16.8rem;
+  height: 3.1rem;
+}
+.mini-linha {
+  fill: none;
+  stroke: var(--apagado);
+  stroke-width: 2;
+}
+.mini-linha.nevoa {
+  stroke-dasharray: 4 4;
+}
+.mini-ponto circle {
+  fill: var(--papel);
+  stroke: var(--tinta);
+  stroke-width: 1.5;
+}
+.mini-ponto.atual circle {
+  fill: var(--aceso);
+  stroke-width: 2.5;
+}
+.mini-ponto text {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--aceso-tinta);
+}
+.corpo {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 2.5rem;
+  min-height: 0;
+}
+.corpo.larga {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.esq,
+.dir {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mensagem {
+  margin: 0;
+  font: 1.5rem/1.3 var(--serif);
+  text-wrap: pretty;
+}
+.cit {
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 0.22rem solid var(--aceso);
+}
+.cit p {
+  margin: 0;
+  font: italic 1.15rem/1.4 var(--serif);
+}
+.cit p::before {
+  content: "“";
+}
+.cit p::after {
+  content: "”";
+}
+.cit code,
+.cit em {
+  font-style: normal;
+}
+.cit cite,
+.numeros cite {
+  display: block;
+  margin-top: 0.3rem;
+  font: normal 0.78rem/1.3 var(--sans);
+  color: var(--apagado);
+}
+.nota {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.nota-fixa {
+  margin: 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--apagado);
+}
+.numeros {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+}
+.numeros q {
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--linha);
+  background: var(--painel);
+  font: 600 1rem/1.4 var(--serif);
+}
+.numeros cite {
+  flex-basis: 100%;
+  margin-top: 0;
+}
+.etiqueta {
+  align-self: start;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid currentColor;
+  font: 600 0.78rem/1.3 var(--mono);
+  white-space: nowrap;
+}
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--linha);
+  background: var(--painel);
+}
+.painel h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font: 600 1.8rem/1.2 var(--serif);
+}
+.painel-data {
+  margin: 0;
+  font: 600 0.9rem var(--mono);
+  color: var(--aceso-linha);
+}
+.painel-texto {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.35;
+}
+.pe {
+  display: grid;
+  gap: 0.4rem;
+}
+.ingestao {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--linha);
+}
+.ingestao h2 {
+  margin: 0;
+  font: 700 0.8rem/1.25 var(--sans);
+}
+.ingestao ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+.honesta {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.8rem;
+  border: 0.13rem dashed var(--aceso-linha);
+  font-weight: 600;
+}
+.honesta .bx {
+  font-size: 1.3rem;
+}
+.evidencia {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--apagado);
+}
+
+/* Nós e arestas dos desenhos (parada 3 e grafo da parada 4). Aceso = cor + borda grossa + selo. */
+.no rect,
+.cartao rect {
+  fill: var(--painel);
+  stroke: var(--tinta);
+  stroke-width: 1.5;
+}
+.no-rotulo {
+  font: 600 17.5px var(--mono);
+  text-anchor: middle;
+  fill: var(--tinta);
+}
+.cartao-rotulo {
+  font-size: 16.5px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--tinta);
+}
+.no.aceso rect,
+.cartao.aceso rect {
+  fill: var(--aceso);
+  stroke-width: 4.5;
+}
+.no.aceso .no-rotulo,
+.cartao.aceso .cartao-rotulo {
+  fill: var(--aceso-tinta);
+}
+.selado circle {
+  fill: var(--tinta);
+}
+.selado text {
+  font: 19px boxicons;
+  text-anchor: middle;
+  fill: var(--papel);
+}
+a.cartao:hover rect,
+a.cartao:focus-visible rect {
+  stroke-width: 4.5;
+}
+.aresta line,
+.aresta-n {
+  stroke: var(--linha);
+  stroke-width: 2;
+}
+.aresta.aceso line,
+.aresta-n.aceso {
+  stroke: var(--aceso-linha);
+  stroke-width: 5;
+}
+.grafo.neutro .aresta line {
+  stroke: var(--tinta);
+}
+.elo-base {
+  stroke: var(--apagado);
+  stroke-width: 2;
+  stroke-dasharray: 3 5;
+}
+.aresta-rotulo {
+  font: 16.5px var(--mono);
+  text-anchor: middle;
+  fill: var(--tinta);
+  paint-order: stroke;
+  stroke: var(--papel);
+  stroke-width: 7px;
+  stroke-linejoin: round;
+}
+
+/* ---------- Parada 1: a trilha alarga ---------- */
+.diag2 {
+  margin: 0;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1.2rem;
+}
+.diag2-nos {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+}
+.diag2-nos span {
+  padding: 0.7rem 1.8rem;
+  border: 0.13rem solid var(--tinta);
+  border-radius: 0.5rem;
+  background: var(--painel);
+  font-size: 1.9rem;
+}
+.diag2 .bx {
+  font-size: 2.6rem;
+}
+.diag2 figcaption {
+  font-size: 0.8rem;
+  color: var(--apagado);
+}
+.faixas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+.faixa {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--linha);
+  border-left: 0.6rem solid var(--aceso);
+  background: var(--painel);
+}
+.faixa[data-estado="apagado"] {
+  visibility: hidden;
+}
+.faixa-rotulo {
+  font: 600 1.5rem/1.2 var(--serif);
+}
+.faixa q {
+  grid-column: 1;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.faixa .etiqueta {
+  grid-area: 1 / 2;
+}
+.figura {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.6rem;
+  border: 1px dashed var(--linha);
+}
+.fig-lado {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  font-size: 1rem;
+}
+.figura .bx {
+  font-size: 2rem;
+}
+.figura > .bx {
+  color: var(--apagado);
+}
+
+/* ---------- Parada 2: placas em um poste ---------- */
+.poste {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 22rem minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+.placas {
+  height: 100%;
+  margin: 0;
+  padding: 0.8rem 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  border-left: 0.6rem solid var(--tinta);
+}
+.placa {
+  display: block;
+  padding: 0.7rem 2.4rem 0.7rem 1.2rem;
+  clip-path: polygon(0 0, calc(100% - 1.3rem) 0, 100% 50%, calc(100% - 1.3rem) 100%, 0 100%);
+  background: var(--tinta);
+  color: var(--papel);
+  font: 600 1.3rem/1.25 var(--serif);
+  text-decoration: none;
+}
+.placa:hover,
+.placa:focus-visible {
+  margin-right: -0.6rem;
+}
+.placa[aria-current] {
+  margin-right: -1.4rem;
+  padding-left: 1.6rem;
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  font-weight: 700;
+}
+
+/* ---------- Parada 3: nascentes fora do IPT ---------- */
+.nascentes {
+  width: 100%;
+  flex: none;
+}
+.ficha {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.5rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--linha);
+  background: var(--painel);
+}
+.ficha dt {
+  font: 700 0.78rem/1.3 var(--sans);
+  color: var(--apagado);
+}
+.ficha dd {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+/* ---------- Parada 4: o mirante ---------- */
+.sec-cab {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+}
+.sec-cab h2 {
+  margin: 0;
+  font: 600 1.5rem/1.2 var(--serif);
+}
+.sec-cab p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--apagado);
+}
+.auge {
+  margin-block: auto;
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+}
+.auge-num {
+  display: grid;
+  justify-items: center;
+}
+.auge-num strong {
+  font: 600 8.5rem/1 var(--serif);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -0.02em;
+}
+.auge-rotulo {
+  font: 600 1.4rem/1.3 var(--serif);
+}
+.auge-reinos {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--apagado);
+}
+.tematicas {
+  margin: 0;
+  padding: 0.8rem 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 2.2rem;
+  border-block: 1px solid var(--linha);
+}
+.tematicas strong {
+  font: 600 1.5rem/1 var(--serif);
+}
+.sec-0 .nota-fixa {
+  text-align: center;
+}
+.fluxo {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2.6rem;
+}
+.elo {
+  position: relative;
+  min-height: 11.5rem;
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 0.13rem solid var(--tinta);
+  border-top: 0.6rem solid var(--aceso);
+  background: var(--painel);
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+.elo .bx {
+  font-size: 2.4rem;
+}
+.elo[data-estado="apagado"] {
+  opacity: 0.25;
+  border-top-color: var(--tinta);
+}
+.elo + .elo::before {
+  content: "→";
+  position: absolute;
+  left: -2.05rem;
+  top: 40%;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.fatos {
+  margin-top: auto;
+  padding-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.blocos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.bloco {
+  height: 100%;
+  min-height: 5.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0.7rem;
+  border: 0.1rem solid var(--tinta);
+  background: var(--painel);
+  color: var(--tinta);
+  font: 600 0.95rem/1.2 var(--serif);
+  text-decoration: none;
+}
+.bloco:hover {
+  border-color: var(--aceso-linha);
+}
+.bloco[aria-current] {
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  border: 0.22rem solid var(--tinta);
+  font-weight: 700;
+}
+.bloco[aria-current] .blaze {
+  background: var(--aceso-tinta);
+  color: var(--aceso);
+}
+.bloco-detalhe {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+  padding-top: 0.6rem;
+}
+.bloco-detalhe.com-grafo {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+}
+.resumo {
+  max-width: 48rem;
+  margin: 0 0 1.2rem;
+  font: 2rem/1.25 var(--serif);
+}
+.bloco-detalhe .cit {
+  max-width: 52rem;
+  margin-bottom: 0.9rem;
+}
+.bloco-detalhe .cit p {
+  font-size: 1.5rem;
+}
+.grafo {
+  display: block;
+  width: 100%;
+  max-height: 20.5rem;
+}
+.licoes {
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: licao;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.licoes li {
+  counter-increment: licao;
+  padding: 1rem 1.2rem 1.2rem;
+  border-top: 0.5rem solid var(--aceso);
+  background: var(--painel);
+  font: 1.45rem/1.35 var(--serif);
+}
+.licoes li::before {
+  content: counter(licao);
+  display: block;
+  margin-bottom: 0.3rem;
+  font: 700 1.8rem/1 var(--serif);
+}
+.perg {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34rem;
+  gap: 2rem;
+}
+.perguntas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.pergunta {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.1rem 0.6rem;
+  border-left: 0.35rem solid transparent;
+  color: var(--tinta);
+  font: 1.1rem/1.25 var(--serif);
+  text-decoration: none;
+}
+.pergunta .blaze {
+  align-self: center;
+}
+.pergunta:hover {
+  border-left-color: var(--aceso-linha);
+}
+.pergunta[aria-current] {
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  border-left-color: var(--tinta);
+  font-weight: 700;
+}
+.perg-dir {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.fecho-parada {
+  margin: auto 0 0;
+  padding: 0.5rem 0.8rem;
+  border-top: 0.4rem solid var(--aceso);
+  background: var(--painel);
+  font: 1rem/1.3 var(--serif);
+}
+
+/* ---------- Parada 5: antes ↔ depois ---------- */
+.lemas {
+  height: 100%;
+  display: grid;
+  align-content: center;
+  gap: 2rem;
+}
+.lemas .cit p {
+  font: 1.9rem/1.25 var(--serif);
+}
+.seletor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 0.13rem solid var(--tinta);
+}
+.estado {
+  padding: 0.4rem 1rem;
+  color: var(--tinta);
+  font-size: 0.9rem;
+  text-align: center;
+  text-decoration: none;
+}
+.estado strong {
+  font: 600 1.2rem var(--serif);
+}
+.estado[aria-current] {
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  box-shadow: inset 0 -0.3rem var(--aceso-tinta);
+}
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.tabela tr {
+  border-bottom: 1px solid var(--linha);
+}
+.tabela th {
+  width: 9rem;
+  padding: 0.38rem 0.6rem 0.38rem 0;
+  font: 700 0.8rem/1.6 var(--sans);
+  color: var(--apagado);
+  text-align: left;
+  vertical-align: top;
+}
+.tabela td {
+  padding: 0.38rem 0;
+}
+.adrs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.adrs li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--tinta);
+  background: var(--painel);
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+.adrs strong {
+  font: 600 0.88rem/1.2 var(--serif);
+}
+.adrs code {
+  padding: 0;
+  background: none;
+  font-size: 0.82em;
+}
+
+/* ---------- Parada 6: siga um registro pelo riacho ---------- */
+.riacho {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.3rem;
+}
+.riacho::before {
+  content: "";
+  position: absolute;
+  left: 0.6rem;
+  top: 0.8rem;
+  bottom: 0.8rem;
+  width: 0.3rem;
+  border-radius: 0.2rem;
+  background: var(--agua);
+}
+.etapa {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.18rem 0;
+  color: var(--tinta);
+  font: 1.2rem/1.2 var(--serif);
+  text-decoration: none;
+}
+.etapa .blaze,
+.etapa .bx {
+  background: var(--papel);
+  color: var(--tinta);
+  border-color: var(--agua);
+}
+.etapa .bx {
+  width: 1.5rem;
+  font-size: 1.4rem;
+  text-align: center;
+  color: var(--agua);
+}
+.etapa:hover {
+  text-decoration: underline;
+}
+.etapa[aria-current] {
+  font-weight: 700;
+}
+.etapa[aria-current] .blaze {
+  background: var(--aceso);
+  color: var(--aceso-tinta);
+  border: 0.16rem solid var(--tinta);
+}
+.etapa[aria-current]::after {
+  content: "";
+  flex: 1;
+  height: 0.16rem;
+  background: var(--tinta);
+}
+.dir > .painel {
+  flex: 1;
+}
+.exemplos {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border: 1px dashed var(--apagado);
+}
+.ex {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.3rem;
+  line-height: 1.35;
+}
+.ex-rotulo {
+  grid-column: 1 / -1;
+  font: 700 0.8rem/1.3 var(--sans);
+  color: var(--apagado);
+}
+.ex-antes {
+  text-align: right;
+}
+.ex .bx {
+  font-size: 1.5rem;
+  color: var(--aceso-linha);
+}
+.ex-vazio {
+  margin: 0;
+  color: var(--apagado);
+}
+.resultado {
+  margin: auto 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 0.4rem solid var(--aceso);
+}
+.resultado .bx {
+  font-size: 1.7rem;
+}
+.grafias th:last-child,
+.grafias td {
+  width: auto;
+}
+.grafias tbody th {
+  width: 12rem;
+  font: inherit;
+  color: inherit;
+}
+.grafias td {
+  font: 600 1.25rem/1.3 var(--serif);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

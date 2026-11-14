@@ -1,4 +1,6 @@
 .env
+# ...exceto bibliotecas vendorizadas das páginas de divulgação (sem npm, sem CDN)
+!docs/divulgacao/*/site/vendor/
 
 # Go build artifacts
 *.exe

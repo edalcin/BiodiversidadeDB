@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="description" content="Biodiversidade.Online: de DWC2JSON ao DuckDB, 2022–2026. Apresentação para o GT Repositórios." />
+    <title>A trilha da base integrada</title>
+    <link rel="icon" href="icone.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="vendor/boxicons/boxicons.min.css?v=2026-11-14a" />
+    <link rel="stylesheet" href="estilo.css?v=2026-11-14a" />
+    <script src="tema.js?v=2026-11-14a"></script>
+    <script type="module" src="app.js?v=2026-11-14a"></script>
+  </head>
+  <body>
+    <div id="palco" class="palco" data-paleta="mata">
+      <main id="tela"></main>
+      <footer class="base">
+        <div id="selos" class="selos" role="group" aria-label="Fontes integradas nesta época"></div>
+        <nav class="controles" aria-label="Navegação da apresentação">
+          <span id="conta" class="conta" aria-hidden="true"></span>
+          <a id="ant" class="ctl" aria-label="Passo anterior (seta para a esquerda)"><i class="bx bx-chevron-left" aria-hidden="true"></i></a>
+          <a id="prox" class="ctl" aria-label="Próximo passo (seta para a direita)"><i class="bx bx-chevron-right" aria-hidden="true"></i></a>
+          <a id="mapa" class="ctl" aria-label="Abrir ou fechar a trilha (tecla H)"><i class="bx bx-map-alt" aria-hidden="true"></i></a>
+          <button id="tema" class="ctl" type="button" aria-label="Alternar tema claro e escuro (tecla T)">
+            <i class="bx bx-moon" aria-hidden="true"></i><i class="bx bx-sun" aria-hidden="true"></i>
+          </button>
+          <button id="cheia" class="ctl" type="button" aria-label="Tela cheia (tecla F)"><i class="bx bx-fullscreen" aria-hidden="true"></i></button>
+        </nav>
+      </footer>
+      <div id="anuncio" class="sr" aria-live="polite"></div>
+    </div>
+    <noscript>
+      <div class="sem-js">
+        <h1>A trilha da base integrada</h1>
+        <p>Biodiversidade.Online: de DWC2JSON ao DuckDB, 2022–2026.</p>
+        <p>
+          Uma base integrada da biodiversidade brasileira é infraestrutura. O valor aparece quando se cruzam fontes: espécies, ocorrências,
+          espécies ameaçadas, espécies invasoras e Unidades de Conservação.
+        </p>
+        <p>
+          Esta apresentação precisa de JavaScript. O roteiro completo está em
+          <a href="https://github.com/edalcin/BiodiversidadeDB/blob/main/docs/divulgacao/202622gtRepositorios/roteiro.md">roteiro.md, no GitHub</a>.
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>
